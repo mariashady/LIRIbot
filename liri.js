@@ -67,7 +67,7 @@ function spotifyThisSong() {
 }
 
 function movieThis() {
-    console.log(`\n----\n\nSEARCHING FOR: "${userQuery}`);
+    console.log(`\n----\n\nSEARCHING FOR: "${userQuery}"`);
     if (!userQuery) {
         userQuery = "mr nobody";
     };
