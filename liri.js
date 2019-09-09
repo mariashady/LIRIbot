@@ -1,14 +1,20 @@
 // Link to keys file
 require("dotenv").config();
-var keys = require("./keys.js");
+const keys = require("./keys.js");
 
 let request = require("request");
+
+// const moment = require("moment"); HAD ISSUES INSTALLING MOMENT NPM
+
+const fs = require("fs");
 
 
 // Info for Spotify
 console.log(keys.spotify);
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
+
+let bandsintown = (keys.bandsintown);
 
 
 // User command and input
@@ -26,6 +32,12 @@ function userCommand(userInput, userQuery) {
         case "movie-this":
             movieThis();
             break;
+        case "do-this":
+            doThis(userQuery);
+            break;
+        default:
+            console.log("I don't understand");
+            break;
     }
 }
 
@@ -33,7 +45,22 @@ userCommand(userInput, userQuery);
 
 function concertThis() {
     console.log(`\n----\n\nSEARCHING FOR: "${userQuery}'s next show:`);
-}
+    request("https://rest.bandsintown.com/artists/" + userQuery + "/events?app_id=codingbootcamp" + bandsintown, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            let userBand = JSON.parse(body);
+            if(userBand.length > 0) {
+                for (i = 0; i < 1; i ++) {
+                    console.log(`\n----\n\nArtists: ${userBand[i].lineup[0]} \nVenue: ${userBand[i].venue.name}\nVenue Location: ${userBand[i].venue.latitude},${userBand[i].venue.longitude}\nVenue City: ${userBand[i].venue.country}`)
+
+                    let concertDate = moment(userBand[i].datetime).format("MM/DD/YYYY hh:00 A");
+                    console.log(`Date and Time: ${concertDate}\n\n----`);
+                };
+            } else {
+                console.log('Band or concert not found.');
+            };
+        };
+    });
+};
 
 function spotifyThisSong() {
     console.log(`\n----\n\nSEARCHING FOR: "${userQuery}"`);
@@ -85,4 +112,20 @@ function movieThis() {
     })
 
 
+};
+
+function doThis() {
+
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            return console.log(error);
+        }
+    let dataArr = data.split(",");
+
+    userInput = dataArr[0];
+    userQuery = dataArr[1];
+
+    userCommand(userInput, userQuery);
+
+    });
 };
