@@ -4,7 +4,7 @@ const keys = require("./keys.js");
 
 let request = require("request");
 
-// const moment = require("moment"); HAD ISSUES INSTALLING MOMENT NPM
+// const moment = require("moment"); 
 
 const fs = require("fs");
 
